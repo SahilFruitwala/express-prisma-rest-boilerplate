@@ -2,9 +2,10 @@
   "name": "house-management",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "server.js",
   "scripts": {
-    "dev": "npm run lint-fix && nodemon app.js",
+    "start": "node server.js",
+    "dev": "pnpm run lint-fix && nodemon server.js",
     "format-write": "prettier --write .",
     "lint-fix": "eslint --fix ./*.js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -23,7 +24,13 @@
     "prettier": "^2.7.1"
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.6",
+    "date-format": "^4.0.13",
+    "dotenv": "^16.0.1",
     "express": "^4.18.1",
-    "mongoose": "^6.5.2"
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.5.2",
+    "morgan": "^1.10.0"
   }
 }
