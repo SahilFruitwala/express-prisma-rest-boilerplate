@@ -1,7 +1,4 @@
-const jwt = require('jsonwebtoken')
-
-const { SECRET_KEY } = process.env
-// const User = require('../model/user')
+const { verifyToken } = require('../utils/jwt')
 
 const auth = (req, res, next) => {
   // use only one of these 3
@@ -15,7 +12,7 @@ const auth = (req, res, next) => {
   }
 
   try {
-    const decodedData = jwt.verify(token, SECRET_KEY)
+    const decodedData = verifyToken(token)
     req.user = decodedData
   } catch (error) {
     return res.status(500).json({ msg: 'Something went wrong!' })
