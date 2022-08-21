@@ -6,7 +6,7 @@ const OPTIONS = {
   httpOnly: true,
 }
 
-module.exports = (user, res) => {
+exports.generateAndSendCookie = (user, res) => {
   const token = generateToken({ user_id: user.id, email: user.email })
   user.password = undefined
 
@@ -14,5 +14,16 @@ module.exports = (user, res) => {
     msg: 'Successful login!',
     token,
     user,
+  })
+}
+
+exports.expiresAndSendCookie = (res) => {
+  res.cookie('token', null, {
+    expires: new Date(Date.now()),
+    httpOnly: true,
+  })
+
+  res.status(200).json({
+    msg: 'Successful sign out!',
   })
 }

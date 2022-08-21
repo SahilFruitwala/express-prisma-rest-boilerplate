@@ -19,24 +19,24 @@ model User {
   email           String        @unique
   name            String
   password        String
-  photo           Photo         @relation(fields: [photoId], references: [id])
-  photoId         String        @unique @db.ObjectId
+  photoSecureUrl  String        @default("")
+  photoPublicId   String        @default("")
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
   shoppinglist    ShoppingList?
   expenses        Expenses?
   passResetToken  String?
-  passResetExpiry DateTime?
+  passResetExpiry Int?
   deleted         Boolean       @default(false)
 }
 
-model Photo {
-  id        String  @id @default(auto()) @map("_id") @db.ObjectId
-  publicId  String
-  secureUrl String
-  userId    String? @unique @db.ObjectId
-  User      User?
-}
+// model Photo {
+//   id        String  @id @default(auto()) @map("_id") @db.ObjectId
+//   publicId  String
+//   secureUrl String
+//   userId    String? @unique @db.ObjectId
+//   User      User?
+// }
 
 model Expenses {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
