@@ -1,7 +1,8 @@
 const { generateToken } = require('./jwt')
+const { COOKIE_EXPIRY_DAY } = process.env
 
 const OPTIONS = {
-  expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+  expires: new Date(Date.now() + +COOKIE_EXPIRY_DAY * 24 * 60 * 60 * 1000),
   httpOnly: true,
 }
 
