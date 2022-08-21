@@ -15,15 +15,16 @@ model ShoppingList {
 }
 
 model User {
-  id             String        @id @default(auto()) @map("_id") @db.ObjectId
-  email          String        @unique
-  name           String
-  password       String
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
-  shoppinglist   ShoppingList?
-  expenses       Expenses?
-  passResetToken String
+  id              String        @id @default(auto()) @map("_id") @db.ObjectId
+  email           String        @unique
+  name            String
+  password        String
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  shoppinglist    ShoppingList?
+  expenses        Expenses?
+  passResetToken  String?
+  passResetExpiry DateTime?
 }
 
 model Expenses {

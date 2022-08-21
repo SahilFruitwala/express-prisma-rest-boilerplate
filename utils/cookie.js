@@ -5,7 +5,7 @@ const OPTIONS = {
   httpOnly: true,
 }
 
-exports.generateCookie = (user, res) => {
+module.exports = (user, res) => {
   const token = generateToken({ user_id: user.id, email: user.email })
   user.password = undefined
 
