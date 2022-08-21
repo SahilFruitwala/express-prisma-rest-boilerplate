@@ -16,8 +16,10 @@ specifiers:
   jsonwebtoken: ^8.5.1
   mongoose: ^6.5.2
   morgan: ^1.10.0
+  nodemailer: ^6.7.8
   nodemon: ^2.0.19
   prettier: ^2.7.1
+  validator: ^13.7.0
 
 dependencies:
   '@prisma/client': 4.2.1
@@ -29,6 +31,8 @@ dependencies:
   jsonwebtoken: 8.5.1
   mongoose: 6.5.2
   morgan: 1.10.0
+  nodemailer: 6.7.8
+  validator: 13.7.0
 
 devDependencies:
   eslint: 8.22.0
@@ -1514,6 +1518,11 @@ packages:
     engines: {node: '>= 0.6'}
     dev: false
 
+  /nodemailer/6.7.8:
+    resolution: {integrity: sha512-2zaTFGqZixVmTxpJRCFC+Vk5eGRd/fYtvIR+dl5u9QXLTQWGIf48x/JXvo58g9sa0bU6To04XUv554Paykum3g==}
+    engines: {node: '>=6.0.0'}
+    dev: false
+
   /nodemon/2.0.19:
     resolution: {integrity: sha512-4pv1f2bMDj0Eeg/MhGqxrtveeQ5/G/UVe9iO6uTZzjnRluSA4PVWf8CW99LUPwGB3eNIA7zUFoP77YuI7hOc0A==}
     engines: {node: '>=8.10.0'}
@@ -2051,6 +2060,11 @@ packages:
   /v8-compile-cache/2.3.0:
     resolution: {integrity: sha512-l8lCEmLcLYZh4nbunNZvQCJc5pv7+RCwa8q/LdUx8u7lsWvPDKmpodJAJNwkAhJC//dFY48KuIEmjtd4RViDrA==}
     dev: true
+
+  /validator/13.7.0:
+    resolution: {integrity: sha512-nYXQLCBkpJ8X6ltALua9dRrZDHVYxjJ1wgskNt1lH9fzGjs3tgojGSCBjmEPwkWS1y29+DrizMTW19Pr9uB2nw==}
+    engines: {node: '>= 0.10'}
+    dev: false
 
   /vary/1.1.2:
     resolution: {integrity: sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==}

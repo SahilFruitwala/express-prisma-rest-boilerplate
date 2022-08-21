@@ -6,7 +6,7 @@ const OPTIONS = {
 }
 
 exports.generateCookie = (user, res) => {
-  const token = generateToken({ user_id: user._id, email: user.email })
+  const token = generateToken({ user_id: user.id, email: user.email })
   user.password = undefined
 
   res.status(200).cookie('token', token, OPTIONS).json({

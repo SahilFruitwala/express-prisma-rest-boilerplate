@@ -5,7 +5,7 @@ const bcrypt = require('bcryptjs')
 const cookieParser = require('cookie-parser')
 
 const auth = require('./middleware/auth')
-const prisma = require('./config/database')
+const prisma = require('./prisma')
 const { generateCookie } = require('./utils/cookie')
 
 const app = express()
@@ -55,7 +55,14 @@ app.post('/signin', async (req, res, next) => {
 
     const user = await await prisma.user.findUnique({
       where: { email },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        password: true,
+      },
     })
+    
     if (!(user && (await bcrypt.compare(password, user.password)))) {
       return res.status(400).send('Check your email/password!')
     }
