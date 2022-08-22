@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs')
 const cloudinary = require('cloudinary').v2
 const { randomBytes, createHash } = require('node:crypto')
 
+const CustomError = require('../utils/customError')
 const mailHelper = require('../utils/emailHelper')
 const prisma = require('../prisma')
 const SuperPromise = require('../middleware/superPromise')
@@ -9,20 +10,16 @@ const {
   generateAndSendCookie,
   expiresAndSendCookie,
 } = require('../utils/cookie')
-const CustomError = require('../utils/customError')
 // const DEFAULT_AVATAR = require('../data/defaultAvatar')
 
 exports.signUp = SuperPromise(async (req, res, next) => {
   const { name, email, password } = req.body
-  let result = {
-    public_id: '',
-    secure_url: '',
-  }
+
   if (!(name && email && password && req.files)) {
     return next(new CustomError('All fields are required.', 400))
   }
   const file = req.files.avatar
-  result = await cloudinary.uploader.upload(file.tempFilePath, {
+  const result = await cloudinary.uploader.upload(file.tempFilePath, {
     folder: 'life-management/users',
     width: 150,
     crop: 'scale',
@@ -194,21 +191,13 @@ exports.changePassword = SuperPromise(async (req, res, next) => {
     return next(new CustomError("Passwords don't match!", 400))
   }
 
-  const user = await prisma.user.findUnique({
-    where: { email },
-    select: {
-      id: true,
-      password: true,
-    },
-  })
-
-  if (!(await bcrypt.compare(oldPassword, user.password))) {
+  if (!(await bcrypt.compare(oldPassword, req.user.password))) {
     return next(new CustomError('Check your password!', 400))
   }
 
   await prisma.user.update({
     where: {
-      id: user.id,
+      id: req.user.id,
     },
     data: {
       password,
@@ -221,22 +210,40 @@ exports.changePassword = SuperPromise(async (req, res, next) => {
 })
 
 exports.updateUser = SuperPromise(async (req, res, next) => {
-  // generate random string
   const { email, name } = req.body
+  const { user } = req
 
-  if (!(email && name)) {
-    return next(new CustomError('All fields are required.', 400))
+  if (!email && !name) {
+    return next(new CustomError('Please enter valid data!', 400))
   }
 
-  const user = await prisma.user.findUnique({
-    where: { email },
-    select: {
-      id: true,
-    },
-  })
-
-  if (!user) {
-    return next(new CustomError('Check your password!', 400))
+  let result = {
+    public_id: user.photoPublicId,
+    secure_url: user.photoSecureUrl,
+  }
+  if (req.files) {
+    try {
+      const file = req.files.avatar
+      result = await cloudinary.uploader.upload(file.tempFilePath, {
+        folder: 'life-management/users',
+        width: 150,
+        crop: 'scale',
+      })
+    } catch (error) {
+      return next(
+        new CustomError('Something went wrong while uploading image!', 500)
+      )
+    }
+    try {
+      await cloudinary.uploader.destroy(user.photoPublicId, {
+        resource_type: 'image',
+      })
+    } catch (error) {
+      await cloudinary.uploader.destroy(result.public_id, {
+        resource_type: 'image',
+      })
+      return next(new CustomError('Something went wrong!', 500))
+    }
   }
 
   const updatedUser = await prisma.user.update({
@@ -244,13 +251,17 @@ exports.updateUser = SuperPromise(async (req, res, next) => {
       id: user.id,
     },
     data: {
-      email: email.toLowerCase(),
-      name,
+      email: email?.toLowerCase() || user.email,
+      name: name || user.name,
+      photoPublicId: result.public_id,
+      photoSecureUrl: result.secure_url,
     },
     select: {
       id: true,
       email: true,
       name: true,
+      photoPublicId: true,
+      photoSecureUrl: true,
     },
   })
 
@@ -261,23 +272,19 @@ exports.updateUser = SuperPromise(async (req, res, next) => {
 })
 
 exports.getUser = SuperPromise(async (req, res, next) => {
-  const { email } = req.body
-
   const user = await prisma.user.findUnique({
-    where: { email },
+    where: { id: req.user.id },
     select: {
       id: true,
       email: true,
       name: true,
+      photoPublicId: true,
+      photoSecureUrl: true,
     },
   })
 
-  if (!user) {
-    return next(new CustomError("User doesn't exists!", 404))
-  }
-
   res.status(200).json({
-    msg: 'Success!',
+    success: true,
     user,
   })
 })

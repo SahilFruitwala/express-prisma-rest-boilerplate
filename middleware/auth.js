@@ -1,24 +1,21 @@
+const CustomError = require('../utils/customError')
 const { verifyToken } = require('../utils/jwt')
+const prisma = require('../prisma')
+const SuperPromise = require('./superPromise')
 
-const auth = (req, res, next) => {
-  // use only one of these 3
+exports.isLoggedIn = SuperPromise(async (req, res, next) => {
   const token =
-    req.header('Authorization')?.replace('Bearer ', '') ||
-    req.cookies.token ||
-    req.body.token
+    req.cookies.token || req.header('Authorization')?.replace('Bearer ', '')
 
   if (!token) {
-    return res.status(403).json({ msg: 'Authentication error!' })
+    return next(new CustomError('User is not logged in!', 401))
   }
 
-  try {
-    const decodedData = verifyToken(token)
-    req.user = decodedData
-  } catch (error) {
-    return res.status(500).json({ msg: 'Something went wrong!' })
-  }
+  const decodedData = verifyToken(token)
 
-  return next()
-}
+  req.user = await prisma.user.findUnique({
+    where: { id: decodedData.user_id },
+  })
 
-module.exports = auth
+  next()
+})
