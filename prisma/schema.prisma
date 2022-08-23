@@ -12,6 +12,15 @@ model ShoppingList {
   name   String
   user   User   @relation(fields: [userId], references: [id])
   userId String @unique @db.ObjectId
+  items  Item[]
+}
+
+model Item {
+  id             String        @id @default(auto()) @map("_id") @db.ObjectId
+  name           String
+  done           Boolean       @default(false)
+  ShoppingList   ShoppingList? @relation(fields: [shoppingListId], references: [id])
+  shoppingListId String?       @db.ObjectId
 }
 
 model User {
@@ -29,14 +38,6 @@ model User {
   passResetExpiry Int?
   deleted         Boolean       @default(false)
 }
-
-// model Photo {
-//   id        String  @id @default(auto()) @map("_id") @db.ObjectId
-//   publicId  String
-//   secureUrl String
-//   userId    String? @unique @db.ObjectId
-//   User      User?
-// }
 
 model Expenses {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId

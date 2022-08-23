@@ -7,7 +7,7 @@ const morgan = require('morgan')
 
 require('./utils/prismaHooks')
 
-const homeRoute = require('./routes/homeRoutes')
+const shoppingListRoute = require('./routes/shoppingListRoute')
 const userRoute = require('./routes/userRoutes')
 
 const app = express()
@@ -24,7 +24,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use(morgan('tiny'))
 
 // all routes
-app.use('/api/v1', homeRoute)
 app.use('/api/v1', userRoute)
+app.use('/api/v1', shoppingListRoute)
 
 module.exports = app
