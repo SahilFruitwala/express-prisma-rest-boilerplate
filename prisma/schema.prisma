@@ -19,8 +19,8 @@ model Item {
   id             String        @id @default(auto()) @map("_id") @db.ObjectId
   name           String
   done           Boolean       @default(false)
-  ShoppingList   ShoppingList? @relation(fields: [shoppingListId], references: [id])
-  shoppingListId String?       @db.ObjectId
+  shoppingList   ShoppingList @relation(fields: [shoppingListId], references: [id])
+  shoppingListId String       @db.ObjectId
 }
 
 model User {
