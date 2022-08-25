@@ -19,7 +19,7 @@ exports.addItem = superPromise(async (req, res, next) => {
       },
     },
     include: {
-      shoppingList: true,
+      shoppingList: false,
     },
   })
 
@@ -49,32 +49,14 @@ exports.updateItem = superPromise(async (req, res, next) => {
   res.status(201).json(updatedItem)
 })
 
-exports.getList = superPromise(async (req, res, next) => {
-  const { user } = req
+exports.deleteItem = superPromise(async (req, res, next) => {
+  const itemId = req.params.itemId
 
-  const shoppingList = await prisma.shoppingList.findUnique({
+  await prisma.item.delete({
     where: {
-      userId: user.id,
+      id: itemId,
     },
   })
 
-  res.status(201).json(shoppingList)
+  res.status(201).json({ msg: 'Success!' })
 })
-
-exports.updateList = superPromise(async (req, res, next) => {
-  const shoppingListId = req.params.shoppingListId
-  const { name } = req.body
-
-  const shoppingList = await prisma.shoppingList.update({
-    where: {
-      id: shoppingListId,
-    },
-    data: {
-      name,
-    },
-  })
-
-  res.status(201).json(shoppingList)
-})
-
-// TODO: DELETE SHOPPING LIST

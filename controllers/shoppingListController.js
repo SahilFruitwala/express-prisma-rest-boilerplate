@@ -62,4 +62,15 @@ exports.updateList = superPromise(async (req, res, next) => {
   res.status(201).json(shoppingList)
 })
 
+exports.deleteList = superPromise(async (req, res, next) => {
+  const shoppingListId = req.params.shoppingListId
+
+  await prisma.shoppingList.delete({
+    where: {
+      id: shoppingListId,
+    },
+  })
+  res.status(200).json({ msg: 'Success!' })
+})
+
 // TODO: DELETE SHOPPING LIST

@@ -16,10 +16,12 @@ model ShoppingList {
 }
 
 model Item {
-  id             String        @id @default(auto()) @map("_id") @db.ObjectId
+  id             String       @id @default(auto()) @map("_id") @db.ObjectId
   name           String
-  done           Boolean       @default(false)
-  shoppingList   ShoppingList @relation(fields: [shoppingListId], references: [id])
+  done           Boolean      @default(false)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  shoppingList   ShoppingList @relation(fields: [shoppingListId], references: [id], onDelete: Cascade)
   shoppingListId String       @db.ObjectId
 }
 
@@ -33,19 +35,17 @@ model User {
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
   shoppinglist    ShoppingList?
-  expenses        Expenses?
+  expenses        Expense[]
   passResetToken  String?
   passResetExpiry Int?
   deleted         Boolean       @default(false)
 }
 
-model Expenses {
+model Expense {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   name      String
   amount    Float
-  day       Int
-  month     Int
-  year      Int
+  date      DateTime @default(now())
   user      User     @relation(fields: [userId], references: [id])
   userId    String   @unique @db.ObjectId
   category  Category @default(GROCERY)
