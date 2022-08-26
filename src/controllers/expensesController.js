@@ -1,6 +1,6 @@
 const CustomError = require('../utils/customError')
 const prisma = require('../prisma')
-const superPromise = require('../middleware/superPromise')
+const superPromise = require('../middlewares/superPromise')
 
 exports.addExpense = superPromise(async (req, res, next) => {
   const { name, category, amount, date } = req.body

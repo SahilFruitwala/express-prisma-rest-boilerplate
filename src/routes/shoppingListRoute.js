@@ -1,6 +1,6 @@
 const express = require('express')
 
-const { isLoggedIn } = require('../middleware/auth')
+const { isLoggedIn } = require('../middlewares/auth')
 const {
   createList,
   getList,

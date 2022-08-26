@@ -1,6 +1,6 @@
 const CustomError = require('../utils/customError')
 const prisma = require('../../prisma')
-const superPromise = require('../middleware/superPromise')
+const superPromise = require('../middlewares/superPromise')
 
 exports.createList = superPromise(async (req, res, next) => {
   const { name } = req.body
