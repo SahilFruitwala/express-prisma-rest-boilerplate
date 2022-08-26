@@ -1,6 +1,6 @@
 const CustomError = require('../utils/customError')
 const { verifyToken } = require('../utils/jwt')
-const prisma = require('../prisma')
+const prisma = require('../../prisma')
 const SuperPromise = require('./superPromise')
 
 exports.isLoggedIn = SuperPromise(async (req, res, next) => {

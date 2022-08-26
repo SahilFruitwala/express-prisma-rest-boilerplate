@@ -1,5 +1,5 @@
 const CustomError = require('../utils/customError')
-const prisma = require('../prisma')
+const prisma = require('../../prisma')
 const superPromise = require('../middleware/superPromise')
 
 exports.createList = superPromise(async (req, res, next) => {
