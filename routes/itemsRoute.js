@@ -10,7 +10,7 @@ const {
 const router = express.Router()
 
 router.route('/items/add').post(isLoggedIn, addItem)
-router.route('/items/:itemId').patch(isLoggedIn, updateItem)
-router.route('/items/:itemId').delete(isLoggedIn, deleteItem)
+router.route('/items/:id').patch(isLoggedIn, updateItem)
+router.route('/items/:id').delete(isLoggedIn, deleteItem)
 
 module.exports = router

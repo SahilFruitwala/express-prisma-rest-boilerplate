@@ -27,22 +27,28 @@ exports.addItem = superPromise(async (req, res, next) => {
 })
 
 exports.updateItem = superPromise(async (req, res, next) => {
-  const itemId = req.params.itemId
+  const id = req.params.id
   const { done, name } = req.body
 
   if (!done && !name) {
     return next(new CustomError('Provide all details!', 400))
   }
 
-  const item = await prisma.item.findUnique({ where: { id: itemId } })
+  const item = await prisma.item.findUnique({
+    where: { id },
+    include: { shoppingList: false },
+  })
 
   const updatedItem = await prisma.item.update({
     where: {
-      id: itemId,
+      id,
     },
     data: {
       done: done !== undefined ? done : item.status,
       name: name !== undefined ? name : item.name,
+    },
+    include: {
+      shoppingList: false,
     },
   })
 
@@ -50,11 +56,11 @@ exports.updateItem = superPromise(async (req, res, next) => {
 })
 
 exports.deleteItem = superPromise(async (req, res, next) => {
-  const itemId = req.params.itemId
+  const id = req.params.id
 
   await prisma.item.delete({
     where: {
-      id: itemId,
+      id,
     },
   })
 
