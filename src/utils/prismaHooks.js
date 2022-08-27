@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const prisma = require('../prisma')
+const prisma = require('../../prisma')
 // const crypto = require('crypto')
 
 module.exports = prisma.$use(async (params, next) => {

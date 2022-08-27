@@ -1,5 +1,5 @@
 const CustomError = require('../utils/customError')
-const prisma = require('../prisma')
+const prisma = require('../../prisma')
 const superPromise = require('../middlewares/superPromise')
 
 exports.addExpense = superPromise(async (req, res, next) => {
@@ -9,12 +9,16 @@ exports.addExpense = superPromise(async (req, res, next) => {
     return next(new CustomError('Provide all necessary details!', 400))
   }
 
+  const newDate = new Date(date)
+
   const newExpense = await prisma.expense.create({
     data: {
       name,
       category,
       amount: +amount,
-      date: new Date(date),
+      date: newDate.getDate(),
+      month: newDate.getMonth() + 1,
+      year: newDate.getFullYear(),
       user: {
         connect: {
           id: req.user.id,
@@ -51,6 +55,11 @@ exports.getExpenses = superPromise(async (req, res, next) => {
         category: true,
         amount: true,
         date: true,
+        month: true,
+        year: true,
+      },
+      include: {
+        user: false,
       },
       take: +limit,
       skip: +offset,
@@ -64,7 +73,7 @@ exports.updateExpense = superPromise(async (req, res, next) => {
   const id = req.params.id
   const { name, category, date, amount } = req.body
 
-  if (!name && !category && !date && !amount) {
+  if (!name && !category && !amount) {
     return next(new CustomError('Provide all details!', 400))
   }
 
@@ -73,15 +82,25 @@ exports.updateExpense = superPromise(async (req, res, next) => {
     include: { user: false },
   })
 
+  const newDate = {}
+  if(date){
+    const updateDate = new Date(date)
+    newDate['month'] = updateDate.getMonth() + 1
+    newDate['date'] = updateDate.getDate()
+    newDate['year'] = updateDate.getFullYear() 
+  }
+
   const updatedItem = await prisma.expense.update({
     where: {
       id,
     },
     data: {
-      name: name !== undefined ? name : existingExpense.name,
-      amount: amount !== undefined ? amount : existingExpense.amount,
-      date: date !== undefined ? date : existingExpense.date,
-      category: category !== undefined ? category : existingExpense.category,
+      name: name ? name : existingExpense.name,
+      amount: amount ? amount : existingExpense.amount,
+      date: newDate?.date ? newDate.date : existingExpense.date,
+      month: newDate?.month ? newDate.month : existingExpense.month,
+      year: newDate?.year ? newDate.year : existingExpense.year,
+      category: category ? category : existingExpense.category,
     },
     include: {
       user: false,
@@ -101,4 +120,23 @@ exports.deleteExpense = superPromise(async (req, res, next) => {
   })
 
   res.status(201).json({ msg: 'Success!' })
+})
+
+exports.getSummary = superPromise(async (req, res, next) => {
+  const { options, year, month } = req.body
+  const { user } = req
+
+  const summary = await prisma.expense.groupBy({
+    by: [...options],
+    where: {
+      userId: user.id,
+      year,
+      month
+    },
+    _sum: {
+      amount: true,
+    }
+  })
+
+  res.status(202).json(summary)
 })

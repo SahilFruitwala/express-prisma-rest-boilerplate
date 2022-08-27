@@ -45,7 +45,9 @@ model Expense {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   name      String
   amount    Float
-  date      DateTime     @default(now())
+  date      Int
+  month     Int
+  year      Int
   user      User     @relation(fields: [userId], references: [id])
   userId    String   @unique @db.ObjectId
   category  Category @default(GROCERY)

@@ -4,7 +4,7 @@ const { randomBytes, createHash } = require('node:crypto')
 
 const CustomError = require('../utils/customError')
 const mailHelper = require('../utils/emailHelper')
-const prisma = require('../prisma')
+const prisma = require('../../prisma')
 const SuperPromise = require('../middlewares/superPromise')
 const {
   generateAndSendCookie,
