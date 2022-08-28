@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,15 +11,52 @@ model ShoppingList {
   id     String @id @default(auto()) @map("_id") @db.ObjectId
   name   String
   user   User   @relation(fields: [userId], references: [id])
-  userId String @db.ObjectId
+  userId String @unique @db.ObjectId
+  items  Item[]
+}
+
+model Item {
+  id             String       @id @default(auto()) @map("_id") @db.ObjectId
+  name           String
+  done           Boolean      @default(false)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  shoppingList   ShoppingList @relation(fields: [shoppingListId], references: [id], onDelete: Cascade)
+  shoppingListId String       @db.ObjectId
 }
 
 model User {
-  id           String         @id @default(auto()) @map("_id") @db.ObjectId
-  email        String         @unique
-  name         String
-  password     String
-  createdAt    DateTime
-  updatedAt    DateTime
-  shoppinglist ShoppingList[]
+  id              String        @id @default(auto()) @map("_id") @db.ObjectId
+  email           String        @unique
+  name            String
+  password        String
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  shoppinglist    ShoppingList?
+  expenses        Expense[]
+  passResetToken  String?
+  passResetExpiry Int?
+  deleted         Boolean       @default(false)
+}
+
+model Expense {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  amount    Float
+  date      Int
+  month     Int
+  year      Int
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @unique @db.ObjectId
+  category  Category @default(GROCERY)
+  updatedAt DateTime @updatedAt
+}
+
+enum Category {
+  GROCERY
+  SHOPPING
+  TAKEOUTS
+  UTILITY
+  COMMUTE
+  MISCELLANEOUS
 }
