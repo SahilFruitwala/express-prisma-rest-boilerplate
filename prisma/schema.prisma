@@ -30,8 +30,6 @@ model User {
   email           String        @unique
   name            String
   password        String
-  photoSecureUrl  String        @default("")
-  photoPublicId   String        @default("")
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
   shoppinglist    ShoppingList?

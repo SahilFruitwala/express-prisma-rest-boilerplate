@@ -1,5 +1,4 @@
 const bcrypt = require('bcryptjs')
-const cloudinary = require('cloudinary').v2
 const { randomBytes, createHash } = require('node:crypto')
 
 const CustomError = require('../utils/customError')
@@ -10,20 +9,13 @@ const {
   generateAndSendCookie,
   expiresAndSendCookie,
 } = require('../utils/cookie')
-// const DEFAULT_AVATAR = require('../data/defaultAvatar')
 
 exports.signUp = SuperPromise(async (req, res, next) => {
   const { name, email, password } = req.body
 
-  if (!(name && email && password && req.files)) {
+  if (!(name && email && password)) {
     return next(new CustomError('All fields are required.', 400))
   }
-  const file = req.files.avatar
-  const result = await cloudinary.uploader.upload(file.tempFilePath, {
-    folder: 'life-management/users',
-    width: 150,
-    crop: 'scale',
-  })
 
   const existingUser = await prisma.user.findUnique({
     where: { email },
@@ -37,15 +29,11 @@ exports.signUp = SuperPromise(async (req, res, next) => {
       name,
       email: email.toLowerCase(),
       password,
-      photoSecureUrl: result.secure_url,
-      photoPublicId: result.public_id,
     },
     select: {
       id: true,
       name: true,
       email: true,
-      photoSecureUrl: true,
-      photoPublicId: true,
     },
   })
 
@@ -65,8 +53,6 @@ exports.signIn = SuperPromise(async (req, res, next) => {
       email: true,
       name: true,
       password: true,
-      photoSecureUrl: true,
-      photoPublicId: true,
     },
   })
 
@@ -202,6 +188,11 @@ exports.changePassword = SuperPromise(async (req, res, next) => {
     data: {
       password,
     },
+    select: {
+      id: true,
+      email: true,
+      name: true,
+    },
   })
 
   res.status(204).json({
@@ -217,35 +208,6 @@ exports.updateUser = SuperPromise(async (req, res, next) => {
     return next(new CustomError('Please enter valid data!', 400))
   }
 
-  let result = {
-    public_id: user.photoPublicId,
-    secure_url: user.photoSecureUrl,
-  }
-  if (req.files) {
-    try {
-      const file = req.files.avatar
-      result = await cloudinary.uploader.upload(file.tempFilePath, {
-        folder: 'life-management/users',
-        width: 150,
-        crop: 'scale',
-      })
-    } catch (error) {
-      return next(
-        new CustomError('Something went wrong while uploading image!', 500)
-      )
-    }
-    try {
-      await cloudinary.uploader.destroy(user.photoPublicId, {
-        resource_type: 'image',
-      })
-    } catch (error) {
-      await cloudinary.uploader.destroy(result.public_id, {
-        resource_type: 'image',
-      })
-      return next(new CustomError('Something went wrong!', 500))
-    }
-  }
-
   const updatedUser = await prisma.user.update({
     where: {
       id: user.id,
@@ -253,15 +215,11 @@ exports.updateUser = SuperPromise(async (req, res, next) => {
     data: {
       email: email?.toLowerCase() || user.email,
       name: name || user.name,
-      photoPublicId: result.public_id,
-      photoSecureUrl: result.secure_url,
     },
     select: {
       id: true,
       email: true,
       name: true,
-      photoPublicId: true,
-      photoSecureUrl: true,
     },
   })
 
@@ -278,8 +236,6 @@ exports.getUser = SuperPromise(async (req, res, next) => {
       id: true,
       email: true,
       name: true,
-      photoPublicId: true,
-      photoSecureUrl: true,
     },
   })
 
