@@ -1,11 +1,13 @@
-import { Request, Response, NextFunction } from 'express'
+import { Response, NextFunction } from 'express'
 
 import CustomError from '../utils/customError'
 import prisma from '../../prisma'
 import SuperPromise from '../middlewares/superPromise'
 
+import { UpdatedRequest } from '../types/updatedRequest'
+
 export const addItem = SuperPromise(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: UpdatedRequest, res: Response, next: NextFunction) => {
     const { name, shoppingListId } = req.body
 
     if (!name) {
@@ -31,7 +33,7 @@ export const addItem = SuperPromise(
 )
 
 export const updateItem = SuperPromise(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: UpdatedRequest, res: Response, next: NextFunction) => {
     const id = req.params.id
     const { done, name } = req.body
 
@@ -62,7 +64,7 @@ export const updateItem = SuperPromise(
 )
 
 export const deleteItem = SuperPromise(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: UpdatedRequest, res: Response, next: NextFunction) => {
     const id = req.params.id
 
     await prisma.item.delete({

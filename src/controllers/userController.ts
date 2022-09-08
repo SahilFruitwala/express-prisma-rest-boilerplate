@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express'
+import { Response, NextFunction } from 'express'
 import bcrypt from 'bcryptjs'
 import { randomBytes, createHash } from 'node:crypto'
 
@@ -8,8 +8,10 @@ import prisma from '../../prisma'
 import SuperPromise from '../middlewares/superPromise'
 import { generateAndSendCookie, expiresAndSendCookie } from '../utils/cookie'
 
+import { UpdatedRequest } from '../types/updatedRequest'
+
 export const signUp = SuperPromise(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: UpdatedRequest, res: Response, next: NextFunction) => {
     const { name, email, password } = req.body
 
     if (!(name && email && password)) {
@@ -41,7 +43,7 @@ export const signUp = SuperPromise(
 )
 
 export const signIn = SuperPromise(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: UpdatedRequest, res: Response, next: NextFunction) => {
     const { email, password } = req.body
     if (!(email && password)) {
       return next(new CustomError('All fields are required.', 400))
@@ -67,13 +69,13 @@ export const signIn = SuperPromise(
 )
 
 export const signOut = SuperPromise(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: UpdatedRequest, res: Response, next: NextFunction) => {
     expiresAndSendCookie(res)
   }
 )
 
 export const forgotPassword = SuperPromise(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: UpdatedRequest, res: Response, next: NextFunction) => {
     const { email } = req.body
 
     const user = await prisma.user.findUnique({ where: { email } })
@@ -113,7 +115,7 @@ export const forgotPassword = SuperPromise(
       return res.status(200).json({
         msg: 'If account with given email is there you will receive instruction soon!',
       })
-    } catch (err) {
+    } catch (err: any) {
       await prisma.user.update({
         where: { email },
         data: {
@@ -128,7 +130,7 @@ export const forgotPassword = SuperPromise(
 )
 
 export const resetPassword = SuperPromise(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: UpdatedRequest, res: Response, next: NextFunction) => {
     const token = req.params.token
     const { password, confirmPassword } = req.body
 
@@ -179,7 +181,7 @@ export const resetPassword = SuperPromise(
 )
 
 export const changePassword = SuperPromise(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: UpdatedRequest, res: Response, next: NextFunction) => {
     const { email, oldPassword, password, confirmPassword } = req.body
 
     if (!(email && oldPassword && password && confirmPassword)) {
@@ -215,7 +217,7 @@ export const changePassword = SuperPromise(
 )
 
 export const updateUser = SuperPromise(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: UpdatedRequest, res: Response, next: NextFunction) => {
     const { email, name } = req.body
     const { user } = req
 
@@ -246,7 +248,7 @@ export const updateUser = SuperPromise(
 )
 
 export const getUser = SuperPromise(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: UpdatedRequest, res: Response, next: NextFunction) => {
     const user = await prisma.user.findUnique({
       where: { id: req.user.id },
       select: {

@@ -1,12 +1,13 @@
-import { Request, Response, NextFunction } from 'express'
+import { Response, NextFunction } from 'express'
 
 import CustomError from '../utils/customError'
 import { verifyToken } from '../utils/jwt'
 import prisma from '../../prisma'
 import SuperPromise from '../middlewares/superPromise'
+import { UpdatedRequest } from '../types/updatedRequest'
 
 const isLoggedIn = SuperPromise(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: UpdatedRequest, res: Response, next: NextFunction) => {
     const token =
       req.cookies.token || req.header('Authorization')?.replace('Bearer ', '')
 
@@ -17,8 +18,8 @@ const isLoggedIn = SuperPromise(
     const decodedData = verifyToken(token)
 
     req.user = await prisma.user.findUnique({
-      where: { id: decodedData?.user_id },
-    })
+      where: { id: decodedData.user_id },
+    })!
 
     next()
   }

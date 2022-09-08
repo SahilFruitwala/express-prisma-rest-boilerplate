@@ -1,11 +1,12 @@
-import { Request, Response, NextFunction } from 'express'
+import { Response, NextFunction } from 'express'
 
 import CustomError from '../utils/customError'
 import prisma from '../../prisma'
 import SuperPromise from '../middlewares/superPromise'
+import { UpdatedRequest } from '../types/updatedRequest'
 
 export const addExpense = SuperPromise(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: UpdatedRequest, res: Response, next: NextFunction) => {
     const { name, category, amount, date } = req.body
 
     if (!name || !amount || !category || !date) {
@@ -38,7 +39,7 @@ export const addExpense = SuperPromise(
 )
 
 export const getExpenses = SuperPromise(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: UpdatedRequest, res: Response, next: NextFunction) => {
     const { limit, offset } = req.query
     const { user } = req
 
@@ -48,6 +49,7 @@ export const getExpenses = SuperPromise(
           userId: user.id,
         },
       }),
+      // @ts-ignore
       prisma.expense.findMany({
         where: {
           userId: user.id,
@@ -76,7 +78,7 @@ export const getExpenses = SuperPromise(
 )
 
 export const updateExpense = SuperPromise(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: UpdatedRequest, res: Response, next: NextFunction) => {
     const id = req.params.id
     const { name, category, date, amount } = req.body
 
@@ -119,7 +121,7 @@ export const updateExpense = SuperPromise(
 )
 
 export const deleteExpense = SuperPromise(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: UpdatedRequest, res: Response, next: NextFunction) => {
     const id = req.params.id
 
     await prisma.expense.delete({
@@ -133,7 +135,7 @@ export const deleteExpense = SuperPromise(
 )
 
 export const getSummary = SuperPromise(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: UpdatedRequest, res: Response, next: NextFunction) => {
     const { options, year, month } = req.body
     const { user } = req
 

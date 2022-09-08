@@ -4,8 +4,10 @@ import CustomError from '../utils/customError'
 import prisma from '../../prisma'
 import SuperPromise from '../middlewares/superPromise'
 
+import { UpdatedRequest } from '../types/updatedRequest'
+
 export const createList = SuperPromise(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: UpdatedRequest, res: Response, next: NextFunction) => {
     const { name } = req.body
     const { user } = req
 
@@ -32,7 +34,7 @@ export const createList = SuperPromise(
 )
 
 export const getList = SuperPromise(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: UpdatedRequest, res: Response, next: NextFunction) => {
     const { user } = req
 
     const shoppingList = await prisma.shoppingList.findUnique({
@@ -50,7 +52,7 @@ export const getList = SuperPromise(
 )
 
 export const updateList = SuperPromise(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: UpdatedRequest, res: Response, next: NextFunction) => {
     const id = req.params.id
     const { name } = req.body
 
@@ -76,7 +78,7 @@ export const updateList = SuperPromise(
 )
 
 export const deleteList = SuperPromise(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: UpdatedRequest, res: Response, next: NextFunction) => {
     const id = req.params.id
 
     await prisma.shoppingList.delete({
