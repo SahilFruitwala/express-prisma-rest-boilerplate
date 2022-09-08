@@ -91,7 +91,15 @@ export const updateExpense = SuperPromise(
       include: { user: false },
     })
 
-    const newDate = {}
+    const newDate: {
+      month: number | undefined
+      date: number | undefined
+      year: number | undefined
+    } = {
+      month: undefined,
+      date: undefined,
+      year: undefined,
+    }
     if (date) {
       const updateDate = new Date(date)
       newDate['month'] = updateDate.getMonth() + 1
@@ -104,12 +112,12 @@ export const updateExpense = SuperPromise(
         id,
       },
       data: {
-        name: name ? name : existingExpense.name,
-        amount: amount ? amount : existingExpense.amount,
-        date: newDate?.date ? newDate.date : existingExpense.date,
-        month: newDate?.month ? newDate.month : existingExpense.month,
-        year: newDate?.year ? newDate.year : existingExpense.year,
-        category: category ? category : existingExpense.category,
+        name: name ? name : existingExpense?.name,
+        amount: amount ? amount : existingExpense?.amount,
+        date: newDate?.date ? newDate.date : existingExpense?.date,
+        month: newDate?.month ? newDate.month : existingExpense?.month,
+        year: newDate?.year ? newDate.year : existingExpense?.year,
+        category: category ? category : existingExpense?.category,
       },
       include: {
         user: false,

@@ -41,7 +41,7 @@ export const updateItem = SuperPromise(
       return next(new CustomError('Provide all details!', 400))
     }
 
-    const item = await prisma.item.findUnique({
+    const item: prisma.item = await prisma.item.findUnique({
       where: { id },
       include: { shoppingList: false },
     })
