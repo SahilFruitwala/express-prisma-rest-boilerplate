@@ -18,10 +18,14 @@
     * Read Shopping List
     * Update Shopping List
     * Delete Shopping List
-3. Expenses (Many to one with SHopping List)
-    * Create Expreses to a shopping List
+3. Items (Many to one with Shopping List)
+    * Create Item to a Shopping List
+    * Read Items (Route in Shopping List)
+    * Update Item
+    * Delete Item
+4. Expenses (Many to one with Shopping List)
+    * Create Expenses to a User List
     * Read Expense(s)
-    * Update Expreses
-    * Delete Expreses
-    * Get Expreses based on Category and/or Date
-    _Note_: User might not need Expreses array but currently it is there.
+    * Update Expenses
+    * Delete Expenses
+    * Get Expenses based on Category and/or Date
