@@ -1,9 +1,31 @@
-# TODO
+# Boilerplate for NodeJS Backend using ExpressJS and Prisma ORM
+This is a boilerplate code for NodeJS backend. I have used ExpressJS and Prisma as ORM. Main purpose to use prisma is we can change database easily. 99% times we have to change prisma schema only.
 
+If you are looking for Javascript, you can use `main` or `javascript` branch. If you want typescript support go with `typescript` branch.
+
+If you are looking for contribution checkout the TODO list 👇
+
+## TODO
 - [ ] API Doc/Swagger
+- [ ] Decide Testing Library
 - [ ] Add Test
+- [ ] Add Merging Rules
 
-# Current Feature
+## Dependencies
+- @prisma/client: Prisma Client Library
+- prisma: To generate prisma schema and models
+- bcryptjs: Password Hashing
+- cookie-parser: To save and Process Cookies
+- dotenv: To use environment variable
+- jsonwebtoken: JWT tokens
+- morgan: For logging
+- nodemailer: For email testing
+- express
+- nodemon
+- eslint (and other plugins)
+- prettier
+
+## Current Models and Features
 
 1. User
     * User Authnetication
